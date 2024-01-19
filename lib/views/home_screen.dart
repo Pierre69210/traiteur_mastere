@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatelessWidget{
   const HomeScreen({super.key});
@@ -7,9 +9,70 @@ class HomeScreen extends StatelessWidget{
         return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-            title: Text('Gestion Commandes Traiteur', 
-            style: monPropreStyleTexte,
-            ),
+            title: 
+            
+            AnimatedTextKit(
+              animatedTexts: 
+              [
+                TypewriterAnimatedText(
+                  'Traiteur Demo',
+                  textStyle: monPropreStyleTexte,
+                  speed: const  Duration(milliseconds: 200),
+                ),
+
+                //RotateAnimatedText('traiteur Demo', textStyle: monPropreStyleTexte),
+                //RotateAnimatedText('MANGE !!!', textStyle: monPropreStyleTexte),
+                //RotateAnimatedText('COMMANDE !!', textStyle:monPropreStyleTexte),
+
+                //TyperAnimatedText('Traiteur Demo', textStyle: monPropreStyleTexte),
+                //TyperAnimatedText('MANGE !!', textStyle: monPropreStyleTexte),
+                //TyperAnimatedText('COMMANDE !!', textStyle: monPropreStyleTexte),
+
+                //ColorizeAnimatedText(
+                //'Bon appetito !', 
+                //textStyle : GoogleFonts.anton(
+                //textStyle: const TextStyle(
+                //fontSize: 50 ,
+                //),
+                //),
+                //colors: [
+                  //Colors.purple,
+                  //Colors.blue,
+                  //Colors.yellow,
+                  //Colors.red,
+                //]),
+
+                //ColorizeAnimatedText('MANGE !!', 
+                //textStyle: const TextStyle(
+                //fontFamily: 'Horizon',
+                //fontSize: 50 ,
+                //),
+                //colors: [
+                  //Colors.purple,
+                  //Colors.blue,
+                  //Colors.yellow,
+                  //Colors.red,
+                //]),
+
+                //ColorizeAnimatedText('COMMANDE !!', 
+                //textStyle: const TextStyle(
+                //fontFamily: 'Horizon',
+                //fontSize: 50 ,
+                //),
+                //colors: [
+                  //Colors.purple,
+                  //Colors.blue,
+                  //Colors.yellow,
+                  //Colors.red,
+                //])
+              ],
+              totalRepeatCount: 4,
+              pause: const Duration(milliseconds: 1000),
+              displayFullTextOnTap: true,
+              stopPauseOnTap: true,
+            )
+            
+            ,
             centerTitle: true,
             actions: <Widget> [
               PopupMenuButton(
@@ -45,21 +108,21 @@ class HomeScreen extends StatelessWidget{
               children: <Widget>[
                 ElevatedButton(
                   style: monPropreStyle,
-                  onPressed: () => {}, 
+                  onPressed: () => {print('Catalogue des plats')}, 
                   child: Text('catalogue des plats', 
                   style: monPropreStyleTexte,),
                   ),
                 const SizedBox(height: 30),
                 ElevatedButton(
                   style: monPropreStyle,
-                  onPressed: () => {}, 
+                  onPressed: () => {print('gestion des commandes')}, 
                   child: Text('gestion des commandes', 
                   style: monPropreStyleTexte,),
                   ),
                 const SizedBox(height: 30),
                 ElevatedButton(
                   style: monPropreStyle,
-                  onPressed: () => {}, 
+                  onPressed: () => {print ('espace client')}, 
                   child: Text('Espace client', 
                   style: monPropreStyleTexte,),
                   ),
@@ -84,10 +147,12 @@ ButtonStyle monPropreStyle = ElevatedButton.styleFrom(
   elevation: 5,
 );
 
-TextStyle monPropreStyleTexte = const TextStyle(
+TextStyle monPropreStyleTexte = GoogleFonts.roboto(
+ textStyle : const TextStyle(
   color: Colors.white,
   fontSize: 20,
   fontWeight: FontWeight.bold,
   fontFamily: 'Roboto',
+),
 );
 
