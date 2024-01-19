@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget{
     Widget build(BuildContext context){
         return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: Color.fromARGB(255, 3, 3, 3),
             title: 
             
             AnimatedTextKit(
@@ -106,6 +106,10 @@ class HomeScreen extends StatelessWidget{
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget> [
                 ElevatedButton(
                   style: monPropreStyle,
                   onPressed: () => {print('Catalogue des plats')}, 
@@ -126,7 +130,22 @@ class HomeScreen extends StatelessWidget{
                   child: Text('Espace client', 
                   style: monPropreStyleTexte,),
                   ),
-              ],),
+
+              ],
+              ),
+        ),
+                //Pied de page
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  color: Colors.green,
+                  child: Text('Démo 2024 © ',
+                  textAlign: TextAlign.center,
+                  style: monPropreStyleTexte
+                  ),
+                ),
+              ],
+            ),
         ),
         );
     }
