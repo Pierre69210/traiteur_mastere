@@ -1,7 +1,12 @@
+//import 'package:../services/DataBaseHelper;
 import 'package:flutter/material.dart';
 import 'views/home_screen.dart';
 
-void main() {
+void main() async {
+  //WidgetsFlutterBinding.ensureInitialized();
+  // créer la BDD ou l'utiliser
+  //final DataBaseHelper db = DataBaseHelper.instance;
+  //await db.database;
   runApp(const MyApp());
 }
 
@@ -13,13 +18,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Traiteur Demo',
       theme: ThemeData(
-        primarySwatch : Colors.blue,
-        visualDensity : VisualDensity.adaptivePlatformDensity,
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      locale : const Locale('fr','FR'),
-      debugShowCheckedModeBanner: false, 
+      locale: const Locale('fr', 'FR'),
+      debugShowCheckedModeBanner: false,
       home: const HomeScreen(),
     );
   }
 }
-

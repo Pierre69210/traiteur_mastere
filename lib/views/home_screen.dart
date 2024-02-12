@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:traiteur_mastere/views/creer_client.dart';
+
 
 class HomeScreen extends StatelessWidget{
   const HomeScreen({super.key});
@@ -126,7 +128,13 @@ class HomeScreen extends StatelessWidget{
                 const SizedBox(height: 30),
                 ElevatedButton(
                   style: monPropreStyle,
-                  onPressed: () => {print ('espace client')}, 
+                  onPressed: () => { 
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => const Creerclient()),
+                      )
+                    
+                  }, 
                   child: Text('Espace client', 
                   style: monPropreStyleTexte,),
                   ),

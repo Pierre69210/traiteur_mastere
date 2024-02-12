@@ -1,120 +1,116 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:traiteur_mastere/models/_client.dart';
+import 'package:traiteur_mastere/models/_commande.dart';
+import 'package:traiteur_mastere/models/_commande_plat.dart';
+import 'package:traiteur_mastere/models/_plats.dart';
 import '../models/_plats.dart';
-import '../models/_commandeplat.dart';
-import '../models/_client.dart';
 import '../models/_commande.dart';
+import '../models/_client.dart';
+import '../models/_commande_plat.dart';
 
-class DataBaseHelper{
+class DataBaseHelper {
   static final DataBaseHelper instance = DataBaseHelper._init();
   static Database? _database;
 
   DataBaseHelper._init();
 
   Future<Database> get database async {
-    if (_database != null){
+    if (_database != null) {
       return _database!;
     }
-    _database = await _initDB('trauteyr.db');
+    _database = await _initDB('traiteur.db');
     return _database!;
   }
 
-  Future<Database> _initDB(String filePath) async{
+  Future<Database> _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
-    final path =join(dbPath, filePath);
+    final path = join(dbPath, filePath);
     return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
-  Future _createDB(Database db, int version) async{
+  Future _createDB(Database db, int version) async {
     await db.execute('''
-    CREATE TABLE plat(
-      id INT PRIMARY KEY AUTOINCREMENT,
-      nom TEXT NOT NULL,
-      description TEXTE NOT NULL,
-      prix REAL NOT NULL,
-    )
+      CREATE TABLE plats (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nom TEXT NOT NULL,
+        description TEXT NOT NULL,
+        prix REAL NOT NULL
+      )
     ''');
-
     await db.execute('''
-      CREATE TABLE client(
-      clientid INT PRIMARY KEY AUTOINCREMENT,
-      nom TEXT NOT NULL,
-      prenom TEXTE NOT NULL,
-      email TEXTE NOT NULL,
-      adresse TEXTE NOT NULL,
-    )
-''');
-
+      CREATE TABLE clients (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nom TEXT NOT NULL,
+        prenom TEXT NOT NULL,
+        email TEXT NOT NULL,
+        adresse TEXT NOT NULL
+      )
+    ''');
     await db.execute('''
-      CREATE TABLE commandes(
-      id INT PRIMARY KEY AUTOINCREMENT,
-      client_id INT PRIMARY KEY AUTOINCREMENT,
-      date TEXT NOT NULL,
-      total REAL NOT NULL
-      FOREIGN KEY (client_id) REFERENCES clients (id)
-    )
-''');
-
+      CREATE TABLE commandes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        date TEXT NOT NULL,
+        total REAL NOT NULL,
+        client_id INTEGER NOT NULL,
+        FOREIGN KEY (client_id) REFERENCES clients (id)
+      )
+    ''');
     await db.execute('''
-      CREATE TABLE commandeplat(
-      id INT PRIMARY KEY AUTOINCREMENT,
-      commande_id INT PRIMARY KEY AUTOINCREMENT,
-      plat_id INT PRIMARY KEY AUTOINCREMENT,
-      FOREIGN KEY (commande_id) REFERENCES commandes (id),
-      FOREIGN KEY (plat_id) REFERECENS plats (id),
-    )
-''');
-
+      CREATE TABLE commande_plat (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id_commande INTEGER NOT NULL,
+        id_plat INTEGER NOT NULL,
+        quantite INTEGER NOT NULL,
+        FOREIGN KEY (id_commande) REFERENCES commandes (id),
+        FOREIGN KEY (id_plat) REFERENCES plats (id)
+      )
+    ''');
   }
 
-    //CRUD de plat CREATE / READE / UPDATE /DELETE
-
+  // CRUD de plat
   //C
-Future<Plats> createPlat(Plats plat) async{
-  final db = await database;
-  final id = await db.insert('plats', plat.toMap());
-  return Plats(
-    id:id,
-    nom: plat.nom,
-    description: plat.description,
-    image: plat.image,
-    prix: plat.prix,
-  );
-
-}
-
+  Future<Plats> createPlat(Plats plat) async {
+    final db = await database;
+    final id = await db.insert('plats', plat.toMap());
+    return Plats(
+        id: id,
+        nom: plat.nom,
+        description: plat.description,
+        image: plat.image,
+        prix: plat.prix);
+  }
 
   //R
-  Future<Plats?> readPlat(int id) async{
-    //SELECT * FROM plats WHERE id = id
+  Future<Plats?> readPlat(int id) async {
+    // SELECT * FROM plats WHERE id = id
     final db = await database;
     final maps = await db.query(
       'plats',
-      columns: ['id', 'nom', 'description','image','prix'],
+      columns: ['id', 'nom', 'description', 'image', 'prix'],
       where: 'id = ?',
       whereArgs: [id],
     );
-    if(maps.isNotEmpty){
+    if (maps.isNotEmpty) {
       return Plats.fromMap(maps.first);
-    }else{
+    } else {
       return null;
     }
-
   }
-//U
-  Future<int> updatePlat(Plats plats) async{
+
+  //U
+  Future<int> updatePlat(Plats plat) async {
     final db = await database;
     return db.update(
       'plats',
-      plats.toMap(),
+      plat.toMap(),
       where: 'id = ?',
-      whereArgs: [plats.id],
+      whereArgs: [plat.id],
     );
   }
 
-
   //D
-  Future<int> deletePlat(int id) async{
+  Future<int> deletePlat(int id) async {
     final db = await database;
     return await db.delete(
       'plat',
@@ -123,11 +119,159 @@ Future<Plats> createPlat(Plats plat) async{
     );
   }
 
+  // CRUD de client
+  //C
+  Future<Client> createClient(Client client) async {
+    final db = await database;
+    final id = await db.insert('clients', client.toMap());
+    return Client(
+        clientid: id,
+        nom: client.nom,
+        prenom: client.prenom,
+        email: client.email,
+        adresse: client.adresse);
+  }
 
-  //Fermutre de la BDD
-  Future closeBdd() async{
+  //R
+  Future<Client?> readClient(int id) async {
+    // SELECT * FROM clients WHERE id = id
+    final db = await database;
+    final maps = await db.query(
+      'clients',
+      columns: ['id', 'nom', 'prenom', 'email', 'adresse'],
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isNotEmpty) {
+      return Client.fromMap(maps.first);
+    } else {
+      return null;
+    }
+  }
+
+  //U
+  Future<int> updateClient(Client client) async {
+    final db = await database;
+    return db.update(
+      'clients',
+      client.toMap(),
+      where: 'id = ?',
+      whereArgs: [client.clientid],
+    );
+  }
+
+  //D
+  Future<int> deleteClient(int id) async {
+    final db = await database;
+    return await db.delete(
+      'clients',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // CRUD de commande.dart
+  //C
+  Future<Commande> createCommande(Commande commande) async {
+    final db = await database;
+    final id = await db.insert('commandes', commande.toMap());
+    return Commande(
+      id: id,
+      clientId: commande.clientId,
+      total: commande.total,
+      dateCommande: commande.dateCommande,
+    );
+  }
+
+  //R
+  Future<Commande?> readCommande(int id) async {
+    final db = await database;
+    final maps = await db.query(
+      'commandes',
+      columns: ['id', 'clientId', 'total', 'dateCommande'],
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isNotEmpty) {
+      return Commande.fromMap(maps.first);
+    } else {
+      return null;
+    }
+  }
+
+  //U
+  Future<int> updateCommande(Commande commande) async {
+    final db = await database;
+    return db.update(
+      'commandes',
+      commande.toMap(),
+      where: 'id = ?',
+      whereArgs: [commande.id],
+    );
+  }
+
+  //D
+  Future<int> deleteCommande(int id) async {
+    final db = await database;
+    return await db.delete(
+      'commandes',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+//C
+  Future<CommandePlat> createCommandePlat(CommandePlat commandePlat) async {
+    final db = await database;
+    final id = await db.insert('commande_plats', commandePlat.toMap());
+    return CommandePlat(
+      id: id,
+      idCommande: commandePlat.idCommande,
+      idPlat: commandePlat.idPlat,
+      quantite: commandePlat.quantite,
+    );
+  }
+
+//R
+  Future<CommandePlat?> readCommandePlat(int id) async {
+    final db = await database;
+    final maps = await db.query(
+      'commande_plats',
+      columns: ['id', 'commandeId', 'platId', 'quantite'],
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isNotEmpty) {
+      return CommandePlat.fromMap(maps.first);
+    } else {
+      return null;
+    }
+  }
+
+//U
+  Future<int> updateCommandePlat(CommandePlat commandePlat) async {
+    final db = await database;
+    return db.update(
+      'commande_plats',
+      commandePlat.toMap(),
+      where: 'id = ?',
+      whereArgs: [commandePlat.id],
+    );
+  }
+
+//D
+  Future<int> deleteCommandePlat(int id) async {
+    final db = await database;
+    return await db.delete(
+      'commande_plats',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  // Fermeture de la BDD
+  Future closeBdd() async {
     final db = await instance.database;
     db.close();
   }
-
 }
